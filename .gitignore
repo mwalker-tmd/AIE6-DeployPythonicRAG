@@ -1,6 +1,28 @@
+# Python
 __pycache__/
-.chainlit/
-.venv/ 
+*.py[cod]
+*.egg-info/
+*.env
 .env
-.chainlit/
-.files/
+.env.*
+.venv
+
+# Jupyter
+.ipynb_checkpoints/
+
+# VSCode / PyCharm
+.vscode/
+.idea/
+
+# Hugging Face
+/output/
+/.hf_space.yaml
+
+# Node (React)
+frontend/node_modules/
+frontend/build/
+frontend/dist/
+
+# OS
+.DS_Store
+Thumbs.db

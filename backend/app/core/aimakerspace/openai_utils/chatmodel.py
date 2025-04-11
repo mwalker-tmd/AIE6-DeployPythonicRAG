@@ -1,6 +1,7 @@
 from openai import OpenAI, AsyncOpenAI
 from dotenv import load_dotenv
 import os
+from typing import List, Dict, Any
 
 load_dotenv()
 
@@ -12,11 +13,11 @@ class ChatOpenAI:
         if self.openai_api_key is None:
             raise ValueError("OPENAI_API_KEY is not set")
 
-    def run(self, messages, text_only: bool = True, **kwargs):
+    def run(self, messages: List[Dict[str, Any]], text_only: bool = True, **kwargs):
         if not isinstance(messages, list):
             raise ValueError("messages must be a list")
 
-        client = OpenAI()
+        client = OpenAI(api_key=self.openai_api_key)
         response = client.chat.completions.create(
             model=self.model_name, messages=messages, **kwargs
         )
@@ -26,11 +27,11 @@ class ChatOpenAI:
 
         return response
     
-    async def astream(self, messages, **kwargs):
+    async def astream(self, messages: List[Dict[str, Any]], **kwargs):
         if not isinstance(messages, list):
             raise ValueError("messages must be a list")
         
-        client = AsyncOpenAI()
+        client = AsyncOpenAI(api_key=self.openai_api_key)
 
         stream = await client.chat.completions.create(
             model=self.model_name,

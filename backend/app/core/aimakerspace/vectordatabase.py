@@ -1,7 +1,7 @@
 import numpy as np
 from collections import defaultdict
 from typing import List, Tuple, Callable
-from aimakerspace.openai_utils.embedding import EmbeddingModel
+from backend.app.core.embedding import EmbeddingModel
 import asyncio
 
 

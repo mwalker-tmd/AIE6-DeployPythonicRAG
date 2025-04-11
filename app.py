@@ -2,14 +2,14 @@ import os
 from typing import List
 from chainlit.types import AskFileResponse
 from aimakerspace.text_utils import CharacterTextSplitter, TextFileLoader, PDFLoader
-from aimakerspace.openai_utils.prompts import (
+from backend.app.core.prompts import (
     UserRolePrompt,
     SystemRolePrompt,
     AssistantRolePrompt,
 )
-from aimakerspace.openai_utils.embedding import EmbeddingModel
+from backend.app.core.embedding import EmbeddingModel
 from aimakerspace.vectordatabase import VectorDatabase
-from aimakerspace.openai_utils.chatmodel import ChatOpenAI
+from backend.app.core.chatmodel import ChatOpenAI
 import chainlit as cl
 
 system_template = """\
