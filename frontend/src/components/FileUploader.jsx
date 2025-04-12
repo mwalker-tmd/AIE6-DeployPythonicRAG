@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { config } from '../config'
 
 export default function FileUploader({ onUpload }) {
   const [file, setFile] = useState(null)
@@ -12,7 +13,7 @@ export default function FileUploader({ onUpload }) {
     setStatus('Uploading...')
 
     try {
-      const res = await fetch('http://localhost:7860/upload', {
+      const res = await fetch(`${config.apiUrl}/upload`, {
         method: 'POST',
         body: formData,
       })
