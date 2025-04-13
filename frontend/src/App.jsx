@@ -7,7 +7,10 @@ function App() {
 
   return (
     <div className="app-container">
-      <h1>Pythonic RAG Chat</h1>
+      <div style={{ textAlign: 'center' }}>
+        <img src="/logo_light_transparent.png" alt="TAMARK Designs" style={{ maxWidth: '250px' }} />
+      </div>
+      <h1 style={{ textAlign: 'center' }}>Pythonic RAG Chat</h1>
       {fileUploaded && <ChatBox />}
       <div className="input-area">
         <FileUploader onUploadSuccess={() => setFileUploaded(true)} />
