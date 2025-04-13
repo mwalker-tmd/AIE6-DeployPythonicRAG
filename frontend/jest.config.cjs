@@ -2,10 +2,15 @@ module.exports = {
     testEnvironment: 'jsdom',
     setupFilesAfterEnv: ['<rootDir>/jest.setup.cjs'],
     moduleNameMapper: {
-      '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
-      '\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/__mocks__/fileMock.cjs',
+      '^@/(.*)$': '<rootDir>/src/$1',
     },
     transform: {
-      '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
+      '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { configFile: './babel.config.cjs' }],
     },
+    testEnvironmentOptions: {
+      customExportConditions: [''],
+    },
+    transformIgnorePatterns: [
+      '/node_modules/(?!(@babel/runtime)/)',
+    ],
   };
