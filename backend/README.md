@@ -9,6 +9,8 @@ This is the backend portion of the AIE6-DeployPythonicRAG project, built with Fa
 
 ## Setup Instructions
 
+Perform the following terminal commands from the base of the `backend` folder:
+
 1. **Install uv** (if not already installed)
 
    ```bash
@@ -33,7 +35,7 @@ This is the backend portion of the AIE6-DeployPythonicRAG project, built with Fa
 4. **Start the development server**
 
    ```bash
-   uvicorn main:app --reload
+   uvicorn app.main:app --reload --port 7860
    ```
 
    This will start the FastAPI development server, typically at http://localhost:7860

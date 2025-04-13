@@ -9,6 +9,8 @@ This is the frontend portion of the AIE6-DeployPythonicRAG project, built with R
 
 ## Setup Instructions
 
+Perform the following terminal commands from the base of the `frontend` folder:
+
 1. **Install dependencies**
 
    ```bash

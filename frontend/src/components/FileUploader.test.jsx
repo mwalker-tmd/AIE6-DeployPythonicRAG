@@ -2,107 +2,122 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import FileUploader from './FileUploader';
 
-// Mock the fetch function
+jest.mock('../utils/env', () => ({
+  getApiUrl: () => 'http://localhost:7860'
+}))
+
 global.fetch = jest.fn();
 
-describe('FileUploader Component', () => {
+describe('FileUploader', () => {
   beforeEach(() => {
-    // Reset the mock before each test
-    fetch.mockReset();
+    jest.clearAllMocks();
+    global.fetch = jest.fn();
   });
 
-  test('renders file input and upload button', () => {
-    render(<FileUploader onUpload={() => {}} />);
-    
-    expect(screen.getByRole('button', { name: /upload/i })).toBeInTheDocument();
-    expect(screen.getByLabelText(/file/i)).toBeInTheDocument();
+  it('renders the file upload interface', () => {
+    render(<FileUploader onUploadSuccess={() => {}} />);
+    expect(screen.getByLabelText('File:')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Upload' })).toBeInTheDocument();
+    expect(screen.getByRole('button')).toBeDisabled();
   });
 
-  test('shows uploading status when file is being uploaded', async () => {
-    // Mock a successful fetch response
-    fetch.mockImplementationOnce(() => 
-      Promise.resolve({
-        json: () => Promise.resolve({ message: 'File uploaded successfully' })
-      })
-    );
-
-    render(<FileUploader onUpload={() => {}} />);
-    
-    // Create a file object
-    const file = new File(['test content'], 'test.pdf', { type: 'application/pdf' });
-    
-    // Simulate file selection
-    const fileInput = screen.getByLabelText(/file/i);
-    fireEvent.change(fileInput, { target: { files: [file] } });
-    
-    // Click the upload button
-    fireEvent.click(screen.getByRole('button', { name: /upload/i }));
-    
-    // Check if uploading status is displayed
-    expect(screen.getByText('Uploading...')).toBeInTheDocument();
-    
-    // Wait for the upload to complete
-    await waitFor(() => {
-      expect(screen.getByText('File uploaded successfully')).toBeInTheDocument();
+  it('shows uploading status during file upload', async () => {
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve({ message: 'File uploaded successfully' })
     });
-    
-    // Verify fetch was called with the correct parameters
-    expect(fetch).toHaveBeenCalledWith('http://localhost:7860/upload', {
-      method: 'POST',
-      body: expect.any(FormData)
+
+    render(<FileUploader onUploadSuccess={() => {}} />);
+
+    const fileInput = screen.getByLabelText('File:');
+    const file = new File(['test content'], 'test.txt', { type: 'text/plain' });
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    const uploadButton = screen.getByRole('button', { name: 'Upload' });
+    fireEvent.submit(screen.getByRole('form'));
+
+    expect(uploadButton).toBeDisabled();
+    expect(uploadButton).toHaveTextContent('Uploading...');
+
+    await waitFor(() => {
+      expect(screen.getByTestId('upload-message')).toHaveTextContent('File uploaded successfully');
     });
   });
 
-  test('handles upload failure', async () => {
-    // Mock a failed fetch response
-    fetch.mockImplementationOnce(() => 
-      Promise.reject(new Error('Network error'))
-    );
+  it('handles upload failure gracefully', async () => {
+    global.fetch.mockResolvedValueOnce({
+      ok: false,
+      status: 500,
+      statusText: 'Internal Server Error'
+    });
 
-    render(<FileUploader onUpload={() => {}} />);
-    
-    // Create a file object
-    const file = new File(['test content'], 'test.pdf', { type: 'application/pdf' });
-    
-    // Simulate file selection
-    const fileInput = screen.getByLabelText(/file/i);
+    render(<FileUploader onUploadSuccess={() => {}} />);
+    const fileInput = screen.getByLabelText('File:');
+    const file = new File(['test content'], 'test.txt', { type: 'text/plain' });
     fireEvent.change(fileInput, { target: { files: [file] } });
-    
-    // Click the upload button
-    fireEvent.click(screen.getByRole('button', { name: /upload/i }));
-    
-    // Wait for the error message
+    fireEvent.submit(screen.getByRole('form'));
+
     await waitFor(() => {
-      expect(screen.getByText('Upload failed.')).toBeInTheDocument();
+      expect(screen.getByTestId('upload-message')).toHaveTextContent('Error: HTTP error! status: 500');
+    });
+
+    const uploadButton = screen.getByRole('button', { name: 'Upload' });
+    expect(uploadButton).not.toBeDisabled();
+    expect(uploadButton).toHaveTextContent('Upload');
+  });
+
+  it('shows error message when file upload fails', async () => {
+    global.fetch.mockRejectedValueOnce(new Error('Network error'));
+
+    render(<FileUploader onUploadSuccess={() => {}} />);
+    const file = new File(['test content'], 'test.pdf', { type: 'application/pdf' });
+    fireEvent.change(screen.getByLabelText('File:'), { target: { files: [file] } });
+    fireEvent.submit(screen.getByRole('form'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('upload-message')).toHaveTextContent('Error: Network error');
     });
   });
 
-  test('calls onUpload callback after successful upload', async () => {
-    // Mock a successful fetch response
-    fetch.mockImplementationOnce(() => 
-      Promise.resolve({
-        json: () => Promise.resolve({ message: 'File uploaded successfully' })
-      })
-    );
+  it('shows success message when file is uploaded successfully', async () => {
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve({ message: 'File uploaded successfully!' })
+    });
 
-    // Create a mock callback function
-    const mockOnUpload = jest.fn();
-    
-    render(<FileUploader onUpload={mockOnUpload} />);
-    
-    // Create a file object
+    render(<FileUploader onUploadSuccess={() => {}} />);
     const file = new File(['test content'], 'test.pdf', { type: 'application/pdf' });
-    
-    // Simulate file selection
-    const fileInput = screen.getByLabelText(/file/i);
-    fireEvent.change(fileInput, { target: { files: [file] } });
-    
-    // Click the upload button
-    fireEvent.click(screen.getByRole('button', { name: /upload/i }));
-    
-    // Wait for the upload to complete
+    fireEvent.change(screen.getByLabelText('File:'), { target: { files: [file] } });
+    fireEvent.submit(screen.getByRole('form'));
+
     await waitFor(() => {
-      expect(mockOnUpload).toHaveBeenCalled();
+      expect(screen.getByTestId('upload-message')).toHaveTextContent('File uploaded successfully!');
+    });
+  });
+
+  it('displays message if form is submitted without selecting a file', async () => {
+    render(<FileUploader onUploadSuccess={() => {}} />);
+    fireEvent.submit(screen.getByRole('form'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('upload-message')).toHaveTextContent('Please select a file first');
+    });
+  });
+
+  it('calls onUploadSuccess after successful upload', async () => {
+    const onSuccess = jest.fn();
+    global.fetch.mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve({ message: 'Done!' }),
+    });
+
+    render(<FileUploader onUploadSuccess={onSuccess} />);
+    const file = new File(['123'], 'foo.txt', { type: 'text/plain' });
+    fireEvent.change(screen.getByLabelText('File:'), { target: { files: [file] } });
+    fireEvent.submit(screen.getByRole('form'));
+
+    await waitFor(() => {
+      expect(onSuccess).toHaveBeenCalled();
     });
   });
 });
