@@ -8,6 +8,23 @@ pinned: false
 license: apache-2.0
 ---
 
+# AIE6-DeployPythonicRAG
+
+---
+
+<div align="center">
+
+⚠️ **_IMPORTANT NOTE_** ⚠️
+
+_This project is split into backend and frontend components. Please refer to the specific README files for detailed setup and development instructions:_
+
+- _[Backend README](./backend/README.md) - FastAPI backend setup and configuration_
+- _[Frontend README](./frontend/README.md) - React/Vite frontend setup and configuration_
+
+</div>
+
+---
+
 # Deploying Pythonic Chat With Your Text File Application
 
 In today's breakout rooms, we will be following the process that you saw during the challenge.
