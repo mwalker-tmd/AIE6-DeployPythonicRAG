@@ -1,38 +1,68 @@
 import { useState } from 'react'
-import { config } from '../config'
+import { getApiUrl } from '../utils/env'
 
-export default function FileUploader({ onUpload }) {
+function FileUploader({ onUploadSuccess }) {
   const [file, setFile] = useState(null)
-  const [status, setStatus] = useState('')
+  const [uploading, setUploading] = useState(false)
+  const [message, setMessage] = useState('')
 
-  const uploadFile = async () => {
-    if (!file) return
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0])
+    setMessage('')
+  }
+
+  const uploadFile = async (e) => {
+    e.preventDefault()
+    if (!file) {
+      setMessage('Please select a file first')
+      return
+    }
+
+    setUploading(true)
+    setMessage('')
+
     const formData = new FormData()
     formData.append('file', file)
 
-    setStatus('Uploading...')
-
     try {
-      const res = await fetch(`${config.apiUrl}/upload`, {
+      const response = await fetch(`${getApiUrl()}/upload`, {
         method: 'POST',
         body: formData,
       })
 
-      const data = await res.json()
-      setStatus(data.message)
-      onUpload()
-    } catch (err) {
-      console.error(err)
-      setStatus('Upload failed.')
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      setMessage(data.message || 'File uploaded successfully!')
+      setFile(null)
+      if (onUploadSuccess) onUploadSuccess()
+    } catch (error) {
+      console.error('Error:', error)
+      setMessage('Error: ' + error.message)
+    } finally {
+      setUploading(false)
     }
   }
 
   return (
-    <div>
-      <label htmlFor="file-upload">File:</label>
-      <input id="file-upload" type="file" onChange={(e) => setFile(e.target.files[0])} />
-      <button onClick={uploadFile}>Upload</button>
-      <p>{status}</p>
+    <div className="file-uploader">
+      <form onSubmit={uploadFile} role="form">
+        <label htmlFor="file-input">File:</label>
+        <input
+          id="file-input"
+          type="file"
+          onChange={handleFileChange}
+          disabled={uploading}
+        />
+        <button type="submit" disabled={!file || uploading}>
+          {uploading ? 'Uploading...' : 'Upload'}
+        </button>
+      </form>
+      {message && <p className="message" data-testid="upload-message">{message}</p>}
     </div>
   )
 }
+
+export default FileUploader
