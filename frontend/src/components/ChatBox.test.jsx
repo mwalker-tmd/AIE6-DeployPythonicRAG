@@ -130,7 +130,7 @@ describe('ChatBox Component', () => {
   
     // Immediately check that it's in the "thinking" state
     expect(screen.getByRole('button')).toBeDisabled()
-    expect(screen.getByRole('button')).toHaveTextContent('Thinking...')
+    expect(screen.getByRole('button')).toHaveTextContent('Thinking…')
   
     // Wait for it to finish
     await waitFor(() => {

@@ -35,7 +35,7 @@ export default function ChatBox() {
         while (true) {
           const { done, value } = await reader.read()
           if (done) break
-          
+
           const text = decoder.decode(value)
           setResponse(prev => prev + text)
         }
@@ -55,16 +55,18 @@ export default function ChatBox() {
   return (
     <>
       <div className="response-panel" data-testid="response-panel">{response || 'Response will appear here...'}</div>
-      <textarea
-        rows={3}
-        value={question}
-        onChange={(e) => setQuestion(e.target.value)}
-        placeholder="Ask a question..."
-        data-testid="question-input"
-      />
-      <button onClick={askQuestion} disabled={isStreaming}>
-        {isStreaming ? 'Thinking...' : 'Ask'}
-      </button>
+      <div className="question-input-row">
+        <textarea
+          data-testid="question-input"
+          rows={3}
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          placeholder="Ask a question..."
+        />
+        <button onClick={askQuestion} disabled={isStreaming}>
+          {isStreaming ? 'Thinking…' : 'Ask'}
+        </button>
+      </div>
     </>
   )
 }
