@@ -8,6 +8,17 @@ from app.api import endpoints
 print("✅ FastAPI is booting...")
 print("PYTHONPATH:", os.getenv("PYTHONPATH"))
 
+#Check for the frontend files, which should be in the /static path, logging results
+frontend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "static"))
+print("✅ Looking for static frontend at:", frontend_path)
+
+if not os.path.exists(frontend_path):
+    print("❌ Static directory does not exist!")
+else:
+    print("✅ Static directory found. Contents:")
+    print(os.listdir(frontend_path))
+
+
 app = FastAPI()
 
 # CORS middleware to allow frontend to talk to the backend
