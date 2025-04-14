@@ -26,3 +26,8 @@ app.include_router(endpoints.router)
 # Serve React build from / (root)
 frontend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "static"))
 app.mount("/", StaticFiles(directory=frontend_path, html=True), name="static")
+
+#TEMP: Looking for cause of Runtime Error.
+# List routes on startup
+for route in app.routes:
+    print(f"🔗 ROUTE: {route.path} → {route.name}")
