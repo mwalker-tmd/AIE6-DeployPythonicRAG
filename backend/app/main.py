@@ -24,5 +24,5 @@ app.add_middleware(
 app.include_router(endpoints.router)
 
 # Serve React build from / (root)
-frontend_path = os.path.join(os.path.dirname(__file__), ".." "static")
+frontend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "static"))
 app.mount("/", StaticFiles(directory=frontend_path, html=True), name="static")
