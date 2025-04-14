@@ -21,11 +21,14 @@
     RUN curl -Ls https://astral.sh/uv/install.sh | bash
     ENV PATH="/root/.cargo/bin:$PATH"
     
-    # Copy backend and install Python deps
+    # Copy backend files
     COPY backend/pyproject.toml backend/uv.lock ./backend/
     WORKDIR /app/backend
-    RUN uv pip install --system -r <(uv pip compile pyproject.toml)
-    
+
+    # Compile and install Python dependencies
+    RUN uv pip compile pyproject.toml -o requirements.txt
+    RUN uv pip install --system -r requirements.txt
+        
     # ------------------------
     # Final stage: Combine Frontend + Backend
     # ------------------------
