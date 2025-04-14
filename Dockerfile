@@ -19,6 +19,7 @@
     
     # Install uv (you can change to pip if preferred)
     RUN curl -Ls https://astral.sh/uv/install.sh | bash
+    ENV PATH="/root/.local/bin:$PATH"
     ENV PATH="/root/.cargo/bin:$PATH"
     
     # Copy backend files
