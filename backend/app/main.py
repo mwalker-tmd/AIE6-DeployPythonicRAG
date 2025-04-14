@@ -4,6 +4,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.api import endpoints
 
+#TEMP: Looking for cause of Runtime Error.
+print("✅ FastAPI is booting...")
+print("PYTHONPATH:", os.getenv("PYTHONPATH"))
+
 app = FastAPI()
 
 # CORS middleware to allow frontend to talk to the backend
