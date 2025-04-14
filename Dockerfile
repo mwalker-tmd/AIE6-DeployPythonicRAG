@@ -35,6 +35,7 @@
     # ------------------------
     FROM python:3.11-slim
     WORKDIR /app
+    ENV PYTHONPATH=/app/backend
     
     # Copy backend
     COPY --from=backend-builder /app/backend /app/backend
