@@ -1,11 +1,12 @@
 ---
-title: DeployPythonicRAG
-emoji: 📉
-colorFrom: blue
-colorTo: purple
+title: TMD Pythonic RAG Chat
+emoji: 🚀
+colorFrom: yellow
+colorTo: yellow
 sdk: docker
 pinned: false
 license: apache-2.0
+short_description: React + Python + FastAPI implementation of a RAG application
 ---
 
 # AIE6-DeployPythonicRAG
