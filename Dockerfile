@@ -23,7 +23,7 @@
     ENV PATH="/root/.cargo/bin:$PATH"
     
     # Copy backend files
-    COPY backend/pyproject.toml backend/uv.lock ./backend/
+    COPY backend/ ./backend/
     WORKDIR /app/backend
 
     # Compile and install Python dependencies
