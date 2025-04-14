@@ -48,7 +48,13 @@
     
     # Expose port for Hugging Face
     EXPOSE 7860
-    
+
+    # TEMP: Looking for the Runtimer Error cause.
+    RUN echo "🔍 PYTHONPATH is: $PYTHONPATH" \
+    && echo "🔍 Listing /app:" && ls -al /app \
+    && echo "🔍 Listing /app/backend:" && ls -al /app/backend \
+    && echo "🔍 Listing /app/backend/app:" && ls -al /app/backend/app
+
     # Entrypoint for HF Spaces
     CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "7860"]
     
