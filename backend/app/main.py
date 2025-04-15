@@ -3,7 +3,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.api import endpoints
+from dotenv import load_dotenv
 
+load_dotenv()
 
 app = FastAPI()
 
@@ -23,9 +25,10 @@ app.add_middleware(
 # Include the endpoints
 app.include_router(endpoints.router)
 
-# Serve React build from / (root)
-frontend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "static"))
-app.mount("/", StaticFiles(directory=frontend_path, html=True), name="static")
+# Serve React build from / (root) -- NOTE: required for production only
+if os.getenv("ENVIRONMENT") == "production":
+    frontend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "static"))
+    app.mount("/", StaticFiles(directory=frontend_path, html=True), name="static")
 
 #TEMP: Looking for cause of Runtime Error.
 # List routes on startup

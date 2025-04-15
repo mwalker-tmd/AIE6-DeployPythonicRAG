@@ -360,3 +360,31 @@ For the challenge mode, please instead create a simple FastAPI backend with a si
 You can use the same prompt templates and RAG pipeline as we did here - but you'll need to modify the code to work with FastAPI and React.
 
 Deploy this application to Hugging Face Spaces!
+
+## Environment Variables
+
+Create a `.env` file in the backend directory with the following variables. You can use `.env.example` as a template:
+
+```env
+# CORS Settings
+# Development: Use "*" to allow all origins
+# Production: Specify exact origins, e.g., "https://yourdomain.com,https://api.yourdomain.com"
+ALLOWED_ORIGINS=*
+
+# Required API Keys
+OPENAI_API_KEY=your-api-key-here
+
+# Environment Setting
+# Development: Set to "development" to run API-only mode
+# Production: Set to "production" to serve static frontend content
+ENVIRONMENT=development
+```
+
+The application will automatically load these using python-dotenv. Make sure to:
+- Never commit the `.env` file to version control
+- Use `.env.example` as a template to create your `.env` file
+- In production, always specify exact origins in ALLOWED_ORIGINS instead of using "*"
+- Keep your API keys secure and rotate them regularly
+- Set ENVIRONMENT to "production" only when you want FastAPI to serve the static frontend content
+
+Note: The server runs on port 7860 by default when started with `uvicorn main:app --reload`. If you need to change the port or host, you can specify them as command-line arguments:
